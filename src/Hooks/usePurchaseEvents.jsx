@@ -1,47 +1,65 @@
-import { useState, useEffect } from 'react';
-import { readOnlyProvider } from "../../constants/providers";
-import { getGreenEarnContract } from "../../constants/contract";
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState, useCallback } from "react";
+import { useAccount } from "reown/appkit-adapter-ethers";
+import { useQuery } from "@tanstack/react-query";
+import useContractInstance from "./useContractInstance";
 
 const usePurchaseEvents = () => {
-    const [purchases, setPurchases] = useState([]);
+  const { address } = useAccount();
+  const { usedyContract } = useContractInstance(); 
+  const [purchases, setPurchases] = useState([]);
 
-    const purchaseHandler = (buyerAddress, id, quantity) => {
-        setPurchases((prevState) => [
-            ...prevState,
-            { buyerAddress, id, quantity }
-        ]);
+  const purchaseHandler = useCallback((buyerAddress, id, quantity) => {
+    if (buyerAddress.toLowerCase() !== address?.toLowerCase()) return;
+
+    setPurchases((prev) => [
+      ...prev,
+      {
+        buyerAddress,
+        id: Number(id),
+        quantity: Number(quantity),
+      },
+    ]);
+  }, [address]);
+
+  const fetchEvents = async () => {
+    if (!usedyContract || !address) return;
+
+    const deploymentBlock = 2710870;
+
+    const filter = usedyContract.filters.ProductBought(address);
+    const logs = await usedyContract.queryFilter(filter, deploymentBlock, "latest");
+
+    const parsedEvents = logs.map((e) => ({
+      buyerAddress: e.args[0],
+      id: Number(e.args[1]),
+      quantity: Number(e.args[2]),
+    }));
+
+    setPurchases(parsedEvents);
+    usedyContract.on("ProductBought", purchaseHandler);
+
+    // Return cleanup
+    return () => {
+      usedyContract.off("ProductBought", purchaseHandler);
     };
+  };
 
-    // Function to fetch events and manage event listener
-    const fetchEvents = async () => {
-        const contract = getGreenEarnContract(readOnlyProvider);
+  const { isLoading, error } = useQuery({
+    queryKey: ["purchase-events", address],
+    queryFn: fetchEvents,
+    enabled: !!usedyContract && !!address,
+    refetchOnWindowFocus: false,
+  });
 
-        // Subscribe to the event using contract.on
-        contract.on("ProductBought", purchaseHandler);
-
-        // Return cleanup function to remove the listener
-        return () => {
-            contract.removeListener("ProductBought", purchaseHandler);
-        };
+  useEffect(() => {
+    return () => {
+      if (usedyContract) {
+        usedyContract.off("ProductBought", purchaseHandler);
+      }
     };
+  }, [usedyContract, purchaseHandler]);
 
-    // Updated useQuery usage (passing an object with queryKey and queryFn)
-    const { error, isLoading } = useQuery({
-        queryKey: ['purchase'], // The query key should be an array
-        queryFn: fetchEvents, // The function to fetch data (event listener setup)
-        refetchOnWindowFocus: false, // Optional configuration to avoid refetching on window focus
-    });
-
-    // Cleanup listener when the component is unmounted
-    useEffect(() => {
-        const cleanup = () => fetchEvents();
-        return () => {
-            cleanup(); // Cleanup listener
-        };
-    }, []); // Empty dependency array means it runs only once on mount/unmount
-
-    return { purchases, isLoading, error };
+  return { purchases, isLoading, error };
 };
 
 export default usePurchaseEvents;

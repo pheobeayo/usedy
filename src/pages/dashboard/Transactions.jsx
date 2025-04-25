@@ -25,7 +25,7 @@ const Transactions = () => {
   const [purchase, setPurchase] = useState([]);
   const [approved, setApproved] = useState([]);
 
-  const { usedyContract } = useContractInstance(); // read-only by default
+  const { usedyContract } = useContractInstance(); 
 
   const userSeller = allSeller.find((data) => data?.address === address);
 
@@ -72,7 +72,7 @@ const Transactions = () => {
 
   return (
     <main className="py-10 px-4 md:px-10">
-      <h2 className="text-2xl font-bold mb-6">Transactions</h2>
+      <h2 className="text-2xl font-bold mb-6">Transactions{userSeller ? "(Seller Account)" : "(Buyer Account)"}</h2>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleChange}>
