@@ -1,74 +1,69 @@
-import { useCallback, useEffect, useState } from "react";
-import { readOnlyProvider } from "../constants/providers";
-import { getGreenEarnContract } from "../constants/contract";
-import { wssProvider } from "../constants/providers";
+import { useState, useCallback, useEffect } from "react";
+import { useAppKitAccount, useAppKitProvider } from "@reown/appkit/react";
 import { ethers } from "ethers";
+import useContractInstance from "./useContractInstance"; // Your wrapper to get the GreenEarn contract instance
 
-const UseGetAllProduct = () => {
+const useGetAllProduct = () => {
     const [allProduct, setAllProduct] = useState([]);
-    const [count, setCount] = useState(0);
+    const { isConnected } = useAppKitAccount();
+    const { walletProvider } = useAppKitProvider("eip155");
+    const contract = useContractInstance(false); // false = read-only
 
-    const convertIpfsUrl = (url) => {
-        if (url.startsWith("ipfs://")) {
-            return url.replace("ipfs://", "https://ipfs.io/ipfs/");
-        }
-        return url;
-    };
+    const convertIpfsUrl = (url) =>
+        url.startsWith("ipfs://")
+            ? url.replace("ipfs://", "https://ipfs.io/ipfs/")
+            : url;
 
     const fetchAllProduct = useCallback(async () => {
         try {
-            const contract = getGreenEarnContract(readOnlyProvider);
-            const res = await contract.getAllproduct();
-            const converted = res?.map((item, index)=>{
-                return{id: index+1,
-                    address: item[0],
-                name: item[1],
-                image: convertIpfsUrl(item[2]),
-                location: item[3],
-                product: item[4],
-                price: item[5],
-                weight: item[6],
-                sold: item[7],
-                inProgress: item[8]   
-              }      
-            }) 
-            setAllProduct(converted)
-        } catch (error) {
-            console.error(error);
+            if (!isConnected) return;
+            if (!walletProvider) return;
+
+            const res = await contract.useGetAllProduct();
+            if (!res || !Array.isArray(res)) return;
+            
+            const converted = res?.map((item) => ({
+                address: item[0] || "",
+                name: item[1] || "",
+                image: convertIpfsUrl(item[2]) || "",
+                location: item[3] || "",
+                product: item[4] || "",
+                price: item[5] || "",
+                weight: item[6] || "",
+                sold: item[7] || "",
+                inProgress: item[8] || "",
+            }));
+
+            setAllProduct((prev) =>
+                JSON.stringify(prev) !== JSON.stringify(converted) ? converted : prev
+            );
+        } catch (err) {
+            console.error("Error fetching products:", err);
         }
-    }, []);
-
-    const trackingProduct = useCallback(() => {
-        setCount((prevValue) => prevValue + 1);
-        fetchAllProduct();
-    }, [fetchAllProduct]);
-
+    }, [isConnected, walletProvider, contract]);
 
     useEffect(() => {
         fetchAllProduct();
 
         const filter = {
-            address: import.meta.env.VITE_GREENEARN_ADDRESS ,
+            address: import.meta.env.VITE_GREENEARN_ADDRESS,
             topics: [ethers.id("ProductListed(address,string,uint)")],
         };
 
-        wssProvider.getLogs({ ...filter, fromBlock: 15552507 }).then((events) => {
-            setCount(events.length + 1);
-        });
+        const provider = new ethers.WebSocketProvider(import.meta.env.VITE_WSS_RPC_PROVIDER);
 
-        const provider = new ethers.WebSocketProvider(
-            import.meta.env.VITE_WSS_RPC_URL
-        );
-        provider.on(filter, trackingProduct);
-
-        return () => {
-            // Perform cleanup
-            provider.off(filter, trackingProduct);
+        const onProductListed = () => {
+            fetchAllProduct();
         };
 
-    }, [fetchAllProduct, trackingProduct, count]);
+        provider.on(filter, onProductListed);
+
+        return () => {
+            provider.off(filter, onProductListed);
+        };
+    }, [fetchAllProduct]);
 
     return allProduct;
-}
+};
 
-export default UseGetAllProduct;
+export default useGetAllProduct;

@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import { toast } from 'react-toastify';
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { pharosNetwork } from '../connection';
+import { ethers } from 'ethers';
+import useContractInstance from '../Hooks/useContractInstance';
 
 const style = {
   position: 'absolute',
@@ -23,58 +28,73 @@ const BuyProduct = ({ id, price }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleBuyProduct = () => {
-    // Simulate purchase logic (no real transaction)
-    const total = price * amount;
+  const { address } = useAppKitAccount();
+  const { chainId } = useAppKitNetwork();
+  const { usedyContract } = useContractInstance(true);
 
-    console.log('Simulated purchase:');
-    console.log('Product ID:', id);
-    console.log('Amount:', amount);
-    console.log('Total Price:', total);
+  const handleBuyProduct = async () => {
+    if (!address) {
+      return toast.error("Please connect your wallet", { position: "top-center" });
+    }
 
-    // Reset modal
-    setOpen(false);
+    if (Number(chainId) !== Number(pharosNetwork.id)) {
+      return toast.error("Wrong network. Connect to Pharos", { position: "top-center" });
+    }
+
+    if (!usedyContract) {
+      return toast.error("Contract is not ready", { position: "top-center" });
+    }
+
+    try {
+      const total = ethers.parseUnits(price.toString(), 18) * BigInt(amount);
+      const tx = await usedyContract.buyProduct(id, amount, { value: total });
+      const receipt = await tx.wait();
+
+      if (receipt.status) {
+        toast.success("Product purchase successful!", { position: "top-center" });
+      } else {
+        toast.error("Product purchase failed", { position: "top-center" });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Product purchase failed!", { position: "top-center" });
+    } finally {
+      setOpen(false);
+    }
   };
 
   return (
     <div>
-      <div>
-        <button
-          className="bg-white text-[#154A80] border border-[#154A80] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-2 hover:bg-bg-ash hover:text-darkGrey hover:font-bold"
-          onClick={handleOpen}
-        >
-          Buy Product
-        </button>
+      <button
+        className="bg-white text-[#427142] border border-[#427142] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-2 hover:bg-bg-ash hover:text-darkGrey hover:font-bold"
+        onClick={handleOpen}
+      >
+        Buy Product
+      </button>
 
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <input
-              type="text"
-              placeholder="Product ID"
-              value={id}
-              readOnly
-              className="text-white rounded-lg w-[100%] p-4 bg-[#ffffff23] border border-white/50 backdrop-blur-lg mb-4 outline-none hidden"
-            />
-            <input
-              type="number"
-              placeholder="Amount"
-              onChange={(e) => setAmount(e.target.value)}
-              className="text-white rounded-lg w-[100%] p-4 bg-[#ffffff23] border border-white/50 backdrop-blur-lg mb-4 outline-none"
-            />
-            <button
-              className="bg-[#154A80] text-[white] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-4"
-              onClick={handleBuyProduct}
-            >
-              Buy Product &rarr;
-            </button>
-          </Box>
-        </Modal>
-      </div>
+      <Modal open={open} onClose={handleClose}>
+        <Box sx={style}>
+          <input
+            type="text"
+            placeholder="Product ID"
+            value={id}
+            readOnly
+            className="text-white rounded-lg w-[100%] p-4 bg-[#ffffff23] border border-white/50 backdrop-blur-lg mb-4 outline-none hidden"
+          />
+          <input
+            type="number"
+            placeholder="Amount"
+            onChange={(e) => setAmount(e.target.value)}
+            className="text-white rounded-lg w-[100%] p-4 bg-[#ffffff23] border border-white/50 backdrop-blur-lg mb-4 outline-none"
+          />
+          <button
+            className="bg-[#427142] text-[white] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-4"
+            onClick={handleBuyProduct}
+          >
+            Buy Product &rarr;
+          </button>
+        </Box>
+      </Modal>
     </div>
   );
 };

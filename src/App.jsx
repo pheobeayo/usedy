@@ -1,5 +1,5 @@
-
 import AllRoutes from "./config/AllRoutes"
+import './connection/index'
 
 
 

@@ -1,66 +1,62 @@
-import { useCallback, useEffect, useState } from "react";
-import { readOnlyProvider } from "../constants/providers";
-import { getGreenEarnContract } from "../constants/contract";
-import { wssProvider } from "../constants/providers";
+import { useAppKitAccount, useAppKitProvider } from "@reown/appkit/react";
+import { useState, useCallback, useEffect } from "react";
+import useContractInstance from "./useContractInstance";
 import { ethers } from "ethers";
 
-const useGetSeller = () => {
+const useGetAllSellers = () => {
     const [allSeller, setAllSeller] = useState([]);
-    const [count, setCount] = useState(0);
+  const contract = useContractInstance(false); // read-only
+  const { isConnected } = useAppKitAccount();
+  const { walletProvider } = useAppKitProvider("eip155");
 
-    const fetchAllSeller = useCallback(async () => {
-        try {
-            const contract = getGreenEarnContract(readOnlyProvider);
-            const res = await contract.getallSeller();
-            const converted = res?.map((item, index)=>{
-                return{
-                    address: item[0],
-                    id: item[1],
-                    name: item[2],
-                    location: item[3],
-                    mail: item[4],
-                    product: item[5],
-                    weight: item[6],
-                    payment: item[7], 
-              }      
-            }) 
-            setAllSeller(converted)
-        } catch (error) {
-            console.error(error);
-        }
-    }, []);
+  const fetchAllSeller = useCallback(async () => {
+    try {
+      if (!isConnected || !contract || !walletProvider) return;
 
-    const trackingSeller = useCallback(() => {
-        setCount((prevValue) => prevValue + 1);
-        fetchAllSeller();
-    }, [fetchAllSeller]);
+      const res = await contract.getallSeller();
+      if (!Array.isArray(res)) return;
 
+      const converted = res.map((item) => ({
+        address: item[0],
+        id: item[1],
+        name: item[2],
+        location: item[3],
+        mail: item[4],
+        product: item[5],
+        weight: item[6],
+        payment: item[7],
+      }));
 
-    useEffect(() => {
-        fetchAllSeller();
+      setAllSeller((prev) =>
+        JSON.stringify(prev) !== JSON.stringify(converted) ? converted : prev
+      );
+    } catch (err) {
+      console.error("Error fetching sellers:", err);
+    }
+  }, [contract, isConnected, walletProvider]);
 
-        const filter = {
-            address: import.meta.env.VITE_GREENEARN_ADDRESS ,
-            topics: [ethers.id("ProfileCreated(address,string,uint)")],
-        };
+  useEffect(() => {
+    if (!isConnected) return;
 
-        wssProvider.getLogs({ ...filter, fromBlock: 15552507 }).then((events) => {
-            setCount(events.length + 1);
-        });
+    fetchAllSeller();
 
-        const provider = new ethers.WebSocketProvider(
-            import.meta.env.VITE_WSS_RPC_URL
-        );
-        provider.on(filter, trackingSeller);
+    const filter = {
+      address: import.meta.env.VITE_USEDY_ADDRESS,
+      topics: [ethers.id("ProfileCreated(address,string,uint)")],
+    };
 
-        return () => {
-            // Perform cleanup
-            provider.off(filter, trackingSeller);
-        };
+    const provider = new ethers.WebSocketProvider(
+      import.meta.env.VITE_WSS_RPC_PROVIDER
+    );
 
-    }, [fetchAllSeller, trackingSeller, count]);
+    provider.on(filter, fetchAllSeller);
 
-    return allSeller;
-}
+    return () => {
+      provider.off(filter, fetchAllSeller);
+    };
+  }, [isConnected, fetchAllSeller]);
 
-export default useGetSeller;
+  return allSeller;
+};
+
+export default useGetAllSellers;

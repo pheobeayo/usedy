@@ -4,6 +4,7 @@ import Modal from '@mui/material/Modal';
 import { IoClose } from "react-icons/io5";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import usePinataUpload from '../Hooks/usePinataUpload';
 
 const style = {
   position: 'absolute',
@@ -35,21 +36,30 @@ const AddProduct = () => {
   const handleClose = () => setOpen(false);
   const handleCloseModal = () => setShowForm(false);
 
-  const changeHandler = (event) => {
+  const { uploadToPinata, isUploading } = usePinataUpload();
+
+  const changeHandler = async (event) => {
     const file = event.target.files[0];
     if (file) {
       const fileSizeInMB = file.size / (1024 * 1024);
       if (fileSizeInMB > 1) {
-        setError('File size exceeds 1MB. Please choose a smaller file.');
+        setError("File size exceeds 1MB. Please choose a smaller file.");
         setSelectedFile(null);
       } else {
-        setError('');
+        setError("");
         setSelectedFile(file);
+        try {
+          const uploadedUrl = await uploadToPinata(file);
+          setImageUrl(uploadedUrl);
+        } catch (error) {
+          console.error("File upload failed:", error);
+        }
       }
     }
   };
 
-  const handleSubmission = async () => {
+
+const handleSubmission = async () => {
     try {
       if (!selectedFile) return toast.error("Please select a file first!");
 
@@ -128,10 +138,10 @@ const AddProduct = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={style}>
+          <Box sx={{ ...style, backgroundColor: '#263E59' }}>
             <label className="form-label font-bold text-[20px]">Select a Product Image</label>
             <p>File must not be more than 1MB </p>
-            <input type="file" onChange={changeHandler} className='my-4'/>
+            <input type="file" onChange={changeHandler} className='my-4 border border-white rounded p-2 bg-transparent '/>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <button 
               className="bg-white text-[#154A80] py-2 px-4 rounded-lg font-bold text-[16px] w-[100%] my-2 hover:bg-bg-ash hover:text-darkGrey hover:font-bold"

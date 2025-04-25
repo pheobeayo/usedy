@@ -11,7 +11,7 @@ const Home = () => {
       <section className="bg-[#073F77]/5 relative py-6">
         <div className="lg:w-[70%] md:w-[70%] w-[100%] mx-auto text-center my-12 px-4 lg:px-0 md:px-0">
           <h1 className="lg:text-[50px] md:text-[50px] text-[28px] font-[700] my-4 font-playfair">
-          Empower sustainable climate action through a decentralized marketplace for used and reuseable products
+            Empower sustainable climate action through a decentralized marketplace for used and reuseable products
           </h1>
           <p className="lg:text-[24px] md:text-[24px] text-[18px] text-[#0F160F]/80">
             Trade recyclables on the blockchain, earn rewards, and power the
@@ -75,7 +75,7 @@ const Home = () => {
       </section>
       <section className=" my-10">
         <h2 className="px-4 lg:px-0 md:px-0 lg:text-[32px] md:text-[32px] text-[24px] font-[700] my-6 flex justify-between flex-col lg:flex-row md:flex-row  w-[90%] mx-auto font-titiliumweb items-center text-center lg:text-left md:text-left">Recyclable materials for sale (Prices are in Unit of Measure) <span className="lg:text-[24px] md:text-[24px] text-[18px] font-[400]">View More</span></h2>
-        <MarketplaceHome /> 
+        <MarketplaceHome />
       </section>
       <section id="about-us" className="lg:w-[90%] md:w-[90%] w-[100%] mx-auto my-14">
         <About />

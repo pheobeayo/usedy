@@ -7,10 +7,11 @@ import { BsBell } from "react-icons/bs";
 import { BsReceipt } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 import logo from '../assets/logo.svg';
-// import { useDisconnect } from "@web3modal/ethers/react";
+import { useDisconnect } from "@reown/appkit/react";
+
 
 const Sidebar = () => {
-  // const { disconnect } = useDisconnect()
+  const { disconnect } = useDisconnect()
 
   const activeStyle = {
     borderLeft: '1px solid #2A382A',
@@ -28,7 +29,7 @@ const Sidebar = () => {
       <NavLink to="market_place" className="text-[14px] text-[#0F160F]  flex items-center py-4 mb-4 px-6  hover:text-[#154A80]" style={({ isActive }) => isActive ? activeStyle : null}><ImCart className="mr-4" /> Marketplace</NavLink>
       <NavLink to="notifications" className="text-[14px] text-[#0F160F]  flex items-center py-4 mb-4 px-6  hover:text-[#154A80]" style={({ isActive }) => isActive ? activeStyle : null}><BsBell className="mr-4" /> Notifications</NavLink>
       <NavLink to="transactions" className="text-[14px] text-[#0F160F]  flex items-center py-4 mb-4 px-6  hover:text-[#154A80]" style={({ isActive }) => isActive ? activeStyle : null}><BsReceipt className="mr-4" /> Transactions</NavLink>
-      <button className="text-[14px] text-[#0F160F]  flex items-center py-4 mb-4 px-6  hover:text-[#154A80]" ><TbSettings className="mr-4" /> Log out</button>
+      <button className="text-[14px] text-[#0F160F]  flex items-center py-4 mb-4 px-6  hover:text-[#154A80]" onClick={disconnect} ><TbSettings className="mr-4" /> Log out</button>
       <p className="lg:text-[14px] md:text-[14px] text-[14px] text-[#0F160F] items-center py-2  px-6  hover:text-[#154A80] font-bold">Wallet Address:</p>
       <p className="lg:text-[14px] md:text-[14px] text-[14px] text-[#154A80] items-center py-2  px-6  hover:text-[#154A80]">0xf768912a201645nnq710</p>
       <p className="lg:text-[14px] md:text-[14px] text-[14px] text-[#0F160F] items-center py-2 px-6  hover:text-[#154A80] font-bold">You currently have:</p>

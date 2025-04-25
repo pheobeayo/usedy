@@ -2,6 +2,8 @@ import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { IoClose } from "react-icons/io5";
+import { toast } from "react-toastify";
+import useEditProduct from "../Hooks/useEditProduct";
 
 const style = {
   position: 'absolute',
@@ -12,7 +14,7 @@ const style = {
   width: 400,
   borderRadius: 10,
   boxShadow: 24,
-  border: '1px solid #42714262',
+  border: '1px solid #1E1D34',
   backgroundColor: '#1E1D34',
   p: 4,
 };
@@ -20,8 +22,7 @@ const style = {
 const EditProduct = ({ id }) => {
   const [open, setOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [showUpload, setShowUpload] = useState(true);
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
   const [productName, setProductName] = useState('');
   const [productWeight, setProductWeight] = useState('');
@@ -29,9 +30,19 @@ const EditProduct = ({ id }) => {
   const [productPrice, setProductPrice] = useState('');
   const [error, setError] = useState('');
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const handleCloseModal = () => setShowForm(false);
+  const { editProduct, isEditing } = useEditProduct();
+
+  const resetState = () => {
+    setOpen(false);
+    setShowForm(false);
+    setSelectedFile(null);
+    setImageUrl('');
+    setProductName('');
+    setProductWeight('');
+    setProductDesc('');
+    setProductPrice('');
+    setError('');
+  };
 
   const changeHandler = (event) => {
     const file = event.target.files[0];
@@ -47,87 +58,72 @@ const EditProduct = ({ id }) => {
     }
   };
 
-  const handleSubmission = () => {
-    if (!selectedFile) {
-      setError("Please select a valid file");
-      return;
-    }
+  const handleSubmission = async () => {
+    if (!selectedFile) return toast.error("No file selected", { position: "top-center" });
 
-    // Simulate image upload success and display form
+    setImageUrl(`ipfs://fakehash/${selectedFile.name}`); // Simulated IPFS
     setShowForm(true);
-    setShowUpload(false);
-    setImageUrl(`ipfs://dummyHashFromLocalUpload/${selectedFile.name}`);
   };
 
-  const handleEditProduct = () => {
-    // Simulate product edit
-    console.log("Product updated:", {
+  const handleEditProduct = async () => {
+    const success = await editProduct({
       id,
-      productName,
+      name: productName,
       imageUrl,
-      productDesc,
-      productWeight,
-      productPrice,
+      description: productDesc,
+      price: productPrice,
+      weight: productWeight,
     });
 
-    // Reset form and close modal
-    setImageUrl("");
-    setProductDesc("");
-    setProductName("");
-    setProductWeight("");
-    setProductPrice("");
-    setOpen(false);
+    if (success) resetState();
   };
 
   return (
     <div>
-      <div className=''>
-        <button
-          className='bg-[#154A80] py-2 text-white mb-4 ppx-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-2 hover:bg-bg-ash hover:text-darkGrey hover:font-bold'
-          onClick={handleOpen}
-        >
-          Edit Information
-        </button>
+      <button
+        className="bg-[#427142] py-2 text-white mb-4 px-4 rounded-lg text-[16px] font-bold w-full hover:bg-bg-ash"
+        onClick={() => setOpen(true)}
+      >
+        Edit Information
+      </button>
 
-        {showUpload && (
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <label className="form-label font-bold text-[20px] font-titiliumweb">Select a Product Image</label>
-              <p>File must not be more than 1MB</p>
-              <input type="file" onChange={changeHandler} className='my-4' />
-              {error && <p style={{ color: 'red' }}>{error}</p>}
-              <button
-                className="bg-white text-[#154A80] py-2 px-4 rounded-lg font-bold text-[16px] w-[100%] my-2 hover:bg-bg-ash hover:text-darkGrey hover:font-bold"
-                onClick={handleSubmission}
-              >
-                Submit
-              </button>
-            </Box>
-          </Modal>
-        )}
+      {!showForm && (
+        <Modal open={open} onClose={resetState}>
+          <Box sx={style}>
+            <label className="font-bold text-[20px]">Select a Product Image</label>
+            <p>File must not be more than 1MB</p>
+            <input type="file" onChange={changeHandler} className="my-4" />
+            {error && <p className="text-red-500">{error}</p>}
+            <button
+              className="bg-white text-[#427142] py-2 px-4 rounded-lg font-bold w-full my-2"
+              onClick={handleSubmission}
+            >
+              Submit
+            </button>
+          </Box>
+        </Modal>
+      )}
 
-        {showForm && (
-          <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-75'>
-            <div className='p-8 rounded-lg text-[#0F160F] flex flex-col items-center bg-[#2a2a2a] lg:w-[30%] md:w-[30%] w-[90%] mx-auto'>
-              <IoClose className='self-end mb-4 font-bold text-2xl text-white' onClick={handleCloseModal} />
-              <input type="text" placeholder='Product Id' className="rounded-lg w-[100%] text-white p-4 bg-[#ffffff23] border border-white/50 backdrop-blur-lg mb-4 outline-none" value={id} readOnly />
-              <input type="text" placeholder='Product Name' className="rounded-lg w-[100%] text-white p-4 bg-[#ffffff23] border border-white/50 backdrop-blur-lg mb-4 outline-none" onChange={(e) => setProductName(e.target.value)} />
-              <input type="text" placeholder='Image Url' className="rounded-lg w-[100%] text-white border border-white/50 p-4 bg-[#ffffff23] backdrop-blur-lg mb-4 outline-none" value={imageUrl} readOnly />
-              <input type="text" placeholder='Description' className="rounded-lg w-[100%] border text-white border-white/50 p-4 bg-[#ffffff23] backdrop-blur-lg mb-4 outline-none" onChange={(e) => setProductDesc(e.target.value)} />
-              <input type="text" placeholder='Quantity' onChange={(e) => setProductWeight(e.target.value)} className="text-white rounded-lg w-[100%] p-4 bg-[#ffffff23] border border-white/50 backdrop-blur-lg mb-4 outline-none" />
-              <input type="text" placeholder='Price' onChange={(e) => setProductPrice(e.target.value)} className="text-white rounded-lg w-[100%] p-4 bg-[#ffffff23] border border-white/50 backdrop-blur-lg mb-4 outline-none" />
-              <button className="bg-[#154A80] text-[white] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-4" onClick={handleEditProduct}>
-                Edit Product &rarr;
-              </button>
-            </div>
+      {showForm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75">
+          <div className="p-8 rounded-lg text-white bg-[#2a2a2a] w-full max-w-md">
+            <IoClose className="ml-auto text-2xl cursor-pointer" onClick={resetState} />
+            <input type="text" value={id} readOnly className="form-input" />
+            <input type="text" placeholder="Product Name" onChange={(e) => setProductName(e.target.value)} className="form-input" />
+            <input type="text" value={imageUrl} readOnly className="form-input" />
+            <input type="text" placeholder="Description" onChange={(e) => setProductDesc(e.target.value)} className="form-input" />
+            <input type="text" placeholder="Quantity" onChange={(e) => setProductWeight(e.target.value)} className="form-input" />
+            <input type="text" placeholder="Price (ETH)" onChange={(e) => setProductPrice(e.target.value)} className="form-input" />
+            <button
+              className="bg-[#427142] text-white py-2 px-4 rounded-lg font-bold w-full mt-4"
+              onClick={handleEditProduct}
+              disabled={isEditing}
+            >
+              {isEditing ? "Editing..." : "Edit Product →"}
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
