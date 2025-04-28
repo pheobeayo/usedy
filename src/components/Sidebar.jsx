@@ -23,7 +23,7 @@ const Sidebar = () => {
   return (
     <div className='bg-[#EDF5FE] w-[20%] text-[rgb(15,22,15)] p-8 py-12 h-[140vh] hidden lg:flex md:flex flex-col'>
       <img src={logo} alt='logo' className="mb-20" />
-      <NavLink to="/dashboard" className="text-[14px] text-[#0F160F] flex items-center py-4 mb-4 px-4 hover:text-[#154A80]" style={({ isActive }) => isActive ? activeStyle : null} end><CgHomeAlt className="mr-4" />Dashboard</NavLink>
+      <NavLink to="/dashboard" className="text-[14px] text-[#0F160F] flex items-center py-4 mb-4 px-6 hover:text-[#154A80]" style={({ isActive }) => isActive ? activeStyle : null} end><CgHomeAlt className="mr-4" />Dashboard</NavLink>
       <NavLink to="chat" className="text-[14px] text-[#0F160F]  flex items-center py-4 mb-4 px-6  hover:text-[#154A80]" style={({ isActive }) => isActive ? activeStyle : null}><BiBox className="mr-4" /> Chat</NavLink>
       <NavLink to="createprofile" className="text-[14px] text-[#0F160F]  flex items-center py-4 mb-4 px-6  hover:text-[#154A80]" style={({ isActive }) => isActive ? activeStyle : null}><IoIosAddCircleOutline className="mr-4" />Create Profile</NavLink>
       <NavLink to="market_place" className="text-[14px] text-[#0F160F]  flex items-center py-4 mb-4 px-6  hover:text-[#154A80]" style={({ isActive }) => isActive ? activeStyle : null}><ImCart className="mr-4" /> Marketplace</NavLink>

@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { toast } from 'react-toastify';
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
-import { pharosNetwork } from '@reown/appkit/networks';
+import { pharosNetwork } from  '../connection';
 import { TiWarning } from 'react-icons/ti';
 import useContractInstance from '../Hooks/useContractInstance';
 
@@ -16,12 +16,12 @@ const style = {
   width: 400,
   borderRadius: 10,
   boxShadow: 24,
-  border: '1px solid #42714262',
-  backgroundColor: '#1E1D34',
+  border: '1px solid #154A80',
+  backgroundColor: '#154A80',
   p: 4,
 };
 
-const ApprovePayment = ({ id, index }) => {
+const ApprovePayment = ({ id }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

@@ -15,12 +15,12 @@ const style = {
   width: 400,
   borderRadius: 10,
   boxShadow: 24,
-  border: '1px solid #427142',
-  backgroundColor: '#427142',
+  border: '1px solid #154A80',
+  backgroundColor: '#154A80',
   p: 4,
 };
 
-const EditProfile = ({ id }) => {
+const EditProfile = () => {
   const [open, setOpen] = useState(false);
   const [location, setLocation] = useState('');
   const [mail, setMail] = useState('');
@@ -61,7 +61,7 @@ const EditProfile = ({ id }) => {
   return (
     <div>
       <button
-        className="bg-[#427142] text-white py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-2 hover:font-bold"
+        className="bg-[#263E59] text-white py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-2 hover:font-bold"
         onClick={handleOpen}
       >
         Edit Profile
@@ -89,7 +89,7 @@ const EditProfile = ({ id }) => {
             onChange={(e) => setMail(e.target.value)}
           />
           <button
-            className="bg-[#154A80] text-white py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-4"
+            className="bg-[#263E59] text-white py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-4"
             onClick={handleEditProfile}
           >
             Edit &rarr;

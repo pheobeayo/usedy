@@ -12,8 +12,8 @@ const style = {
   width: 400,
   borderRadius: 10,
   boxShadow: 24,
-  border: '1px solid #42714262',
-  backgroundColor: '#1E1D34',
+  border: '1px solid #263E59',
+  backgroundColor: '#263E59',
   p: 4,
 };
 

@@ -16,7 +16,7 @@ const style = {
   width: 400,
   borderRadius: 10,
   boxShadow: 24,
-  border: '1px solid #42714262',
+  border: '1px solid #1E1D34',
   backgroundColor: '#1E1D34',
   p: 4,
 };
@@ -66,7 +66,7 @@ const BuyProduct = ({ id, price }) => {
   return (
     <div>
       <button
-        className="bg-white text-[#427142] border border-[#427142] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-2 hover:bg-bg-ash hover:text-darkGrey hover:font-bold"
+        className="bg-white text-[#263E59] border border-[#263E59] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-2 hover:bg-bg-ash hover:text-darkGrey hover:font-bold"
         onClick={handleOpen}
       >
         Buy Product
@@ -88,7 +88,7 @@ const BuyProduct = ({ id, price }) => {
             className="text-white rounded-lg w-[100%] p-4 bg-[#ffffff23] border border-white/50 backdrop-blur-lg mb-4 outline-none"
           />
           <button
-            className="bg-[#427142] text-[white] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-4"
+            className="bg-[#263E59] text-[white] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-4"
             onClick={handleBuyProduct}
           >
             Buy Product &rarr;
