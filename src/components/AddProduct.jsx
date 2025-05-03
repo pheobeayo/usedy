@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import { IoClose } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
-import { IoClose } from "react-icons/io5";
-import 'react-toastify/dist/ReactToastify.css';
-import useSignerOrProvider from '../Hooks/useSignerorProvider';
+import { isSupportedChain } from '../connection';
 import useContractInstance from '../Hooks/useContractInstance';
-import { pharosNetwork } from '../connection';
+import useSignerOrProvider from '../Hooks/useSignerorProvider';
 
 const style = {
   position: 'absolute',
@@ -27,7 +26,7 @@ const AddProduct = () => {
   const [open, setOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showUpload, setShowUpload] = useState(true);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState('');
   const [productName, setProductName] = useState('');
   const [productWeight, setProductWeight] = useState('');
@@ -43,10 +42,16 @@ const AddProduct = () => {
     setOpen(false);
     setShowForm(false);
     setShowUpload(true);
+    resetForm();
+  };
+
+  const handleCloseModal = () => {
+    setShowForm(false);
+    setShowUpload(true);
   };
 
   const changeHandler = (event) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files[0];
     if (file) {
       const fileSizeInMB = file.size / (1024 * 1024);
       if (fileSizeInMB > 1) {
@@ -58,24 +63,24 @@ const AddProduct = () => {
       }
     }
   };
-
+ 
   const handleSubmission = async () => {
     if (!selectedFile) {
-      toast.error("Please select a file before submitting.", { position: "top-center" });
+      toast.error('Please select a file first', { position: 'top-center' });
       return;
     }
 
     try {
       const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("pinataMetadata", JSON.stringify({ name: "ProductImage" }));
-      formData.append("pinataOptions", JSON.stringify({ cidVersion: 0 }));
+      formData.append('file', selectedFile);
+      formData.append('pinataMetadata', JSON.stringify({ name: 'ProductImage' }));
+      formData.append('pinataOptions', JSON.stringify({ cidVersion: 0 }));
 
       setShowForm(true);
       setShowUpload(false);
 
-      const res = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
-        method: "POST",
+      const res = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_PINATA_JWT}`,
         },
@@ -84,40 +89,47 @@ const AddProduct = () => {
 
       const resData = await res.json();
       setImageUrl(`ipfs://${resData.IpfsHash}`);
-
-      toast.success("Upload Successful", { position: "top-center" });
+      toast.success('Upload Successful', { position: 'top-center' });
     } catch (error) {
       console.error(error);
-      toast.error("Upload Failed", { position: "top-center" });
+      toast.error('Upload Failed', { position: 'top-center' });
     }
   };
 
   const handleAddProduct = async () => {
     if (!signer || !contract) {
-      toast.error("Wallet not connected", { position: "top-center" });
+      toast.error('Wallet not connected', { position: 'top-center' });
       return;
     }
 
-    if (chainId !== pharosNetwork.id) {
-      toast.error("Wrong network", { position: "top-center" });
+    if (!isSupportedChain(chainId)) {
+      toast.error('Wrong network', { position: 'top-center' });
       return;
     }
 
     try {
-      const _amount = ethers.parseUnits(productPrice);
-      const tx = await contract.listProduct(productName, imageUrl, productDesc, _amount, productWeight);
+      const _price = ethers.parseUnits(productPrice);
+      const tx = await contract.listProduct(
+        productName,
+        imageUrl,
+        productDesc,
+        _price,
+        productWeight
+      );
       const receipt = await tx.wait();
 
       if (receipt.status) {
-        toast.success("Product listed successfully!", { position: "top-center" });
-        handleClose();
+        toast.success('Product listed successfully!', {
+          position: 'top-center',
+        });
         resetForm();
+        handleCloseModal();
       } else {
-        toast.error("Listing failed", { position: "top-center" });
+        toast.error('Listing failed', { position: 'top-center' });
       }
     } catch (error) {
       console.error(error);
-      toast.error("Transaction failed!", { position: "top-center" });
+      toast.error('Transaction failed!', { position: 'top-center' });
     }
   };
 
@@ -127,6 +139,8 @@ const AddProduct = () => {
     setProductDesc('');
     setProductWeight('');
     setProductPrice('');
+    setSelectedFile(null);
+    setError('');
   };
 
   return (

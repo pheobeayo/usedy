@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
 import { useAppKitAccount } from "@reown/appkit/react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import useGetSeller from "../Hooks/useGetSeller";
 import UseGetAllProduct from "../Hooks/UseGetAllProduct";
 import LoadingSpinner from "./Loader/LoadingSpinner";
@@ -9,8 +8,8 @@ import emptyCart from "../assets/cart.png";
 
 const UserSellerProfile = () => {
   const allProduct = UseGetAllProduct();
-  const allSeller = useGetSeller();
-  const { address, isConnected } = useAppKitAccount();
+  const { allSeller, loading, error } = useGetSeller(); 
+  const { address, isConnected } = useAppKitAccount(); 
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,6 +20,14 @@ const UserSellerProfile = () => {
 
   const userSeller = allSeller.find((data) => data?.address === address);
   const userProducts = allProduct.filter((info) => info?.address === address);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <p>Error fetching sellers: {error}</p>;
+  }
 
   return (
     <div>

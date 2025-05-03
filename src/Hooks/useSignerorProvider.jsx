@@ -1,43 +1,30 @@
 import { useAppKitProvider } from "@reown/appkit/react";
 import { useEffect, useMemo, useState } from "react";
-import { getProvider, readOnlyProvider, wssProvider } from "../constants/providers";
-
+import { ethers } from "ethers";
+import { readOnlyProvider } from "../constants/ReadOnlyProvider";
 
 const useSignerOrProvider = () => {
-  const [signer, setSigner] = useState(null);
+  const [signer, setSigner] = useState();
+
   const { walletProvider } = useAppKitProvider("eip155");
 
-  const provider = useMemo(() => {
-    return walletProvider ? getProvider(walletProvider) : null;
-  }, [walletProvider]);
+  const provider = useMemo(
+    () => (walletProvider ? new ethers.BrowserProvider(walletProvider) : null),
+    [walletProvider]
+  );
+  console.log(provider)
 
   useEffect(() => {
-    const fetchSigner = async () => {
-      if (!provider) {
-        setSigner(null);
-        return;
-      }
+    if (!provider) return setSigner(null);
 
-      try {
-        const newSigner = await provider.getSigner();
-        if (!signer || newSigner.address !== signer.address) {
-          setSigner(newSigner);
-        }
-      } catch (err) {
-        console.error("Failed to get signer:", err);
-        setSigner(null);
-      }
-    };
-
-    fetchSigner();
+    provider.getSigner().then((newSigner) => {
+      if (!signer) return setSigner(newSigner);
+      if (newSigner.address === signer.address) return;
+      setSigner(newSigner);
+    });
   }, [provider, signer]);
 
-  return {
-    signer,
-    provider, 
-    readOnlyProvider, 
-    wssProvider, 
-  };
+  return { signer, provider, readOnlyProvider };
 };
 
 export default useSignerOrProvider;

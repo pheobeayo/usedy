@@ -28,7 +28,7 @@ const CreateProfile = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleCreate = async () => {
+  const handleCreateProfile = async () => {
     const success = await createProfile(sellerName, location, mail);
     if (success) {
       setSellerName('');
@@ -71,7 +71,7 @@ const CreateProfile = () => {
           />
           <button
             className="bg-[#154A80] text-[white] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-4"
-            onClick={handleCreate}
+            onClick={handleCreateProfile}
             disabled={isCreating}
           >
             {isCreating ? "Creating..." : "Create →"}

@@ -3,20 +3,26 @@ import { useState, useCallback, useEffect } from "react";
 import useContractInstance from "./useContractInstance";
 import { ethers } from "ethers";
 
-const useGetAllSellers = () => {
-    const [allSeller, setAllSeller] = useState([]);
+const useGetSeller = () => {
+  const [allSeller, setAllSeller] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [sellerCount, setSellerCount] = useState(0);
+
   const contract = useContractInstance(false); // read-only
   const { isConnected } = useAppKitAccount();
   const { walletProvider } = useAppKitProvider("eip155");
 
   const fetchAllSeller = useCallback(async () => {
+    if (!contract || !walletProvider) return;
+
+    setLoading(true);
     try {
-      if (!isConnected || !contract || !walletProvider) return;
+      const sellers = await contract.getallSeller();
 
-      const res = await contract.getallSeller();
-      if (!Array.isArray(res)) return;
+      if (!Array.isArray(sellers)) return;
 
-      const converted = res.map((item) => ({
+      const mapped = sellers.map((item) => ({
         address: item[0],
         id: item[1],
         name: item[2],
@@ -28,12 +34,17 @@ const useGetAllSellers = () => {
       }));
 
       setAllSeller((prev) =>
-        JSON.stringify(prev) !== JSON.stringify(converted) ? converted : prev
+        JSON.stringify(prev) !== JSON.stringify(mapped) ? mapped : prev
       );
+      setSellerCount(mapped.length);
+      setError(null);
     } catch (err) {
       console.error("Error fetching sellers:", err);
+      setError("Failed to load seller data");
+    } finally {
+      setLoading(false);
     }
-  }, [contract, isConnected, walletProvider]);
+  }, [contract, walletProvider]);
 
   useEffect(() => {
     if (!isConnected) return;
@@ -56,7 +67,12 @@ const useGetAllSellers = () => {
     };
   }, [isConnected, fetchAllSeller]);
 
-  return allSeller;
+  return {
+    allSeller,
+    loading,
+    error,
+    sellerCount,
+  };
 };
 
-export default useGetAllSellers;
+export default useGetSeller;
