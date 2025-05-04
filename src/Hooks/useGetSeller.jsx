@@ -33,17 +33,11 @@ const useGetSeller = () => {
         payment: item[7],
       }));
 
-      setAllSeller((prev) =>
-        JSON.stringify(prev) !== JSON.stringify(mapped) ? mapped : prev
-      );
-      setSellerCount(mapped.length);
-      setError(null);
+      setAllSeller(mapped)
     } catch (err) {
       console.error("Error fetching sellers:", err);
       setError("Failed to load seller data");
-    } finally {
-      setLoading(false);
-    }
+    } 
   }, [contract, walletProvider]);
 
   useEffect(() => {

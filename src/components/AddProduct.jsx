@@ -4,6 +4,7 @@ import Modal from '@mui/material/Modal';
 import { IoClose } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
+import { SUPPORTED_CHAIN } from '../connection';
 import { isSupportedChain } from '../connection';
 import useContractInstance from '../Hooks/useContractInstance';
 import useSignerOrProvider from '../Hooks/useSignerorProvider';
@@ -26,16 +27,17 @@ const AddProduct = () => {
   const [open, setOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showUpload, setShowUpload] = useState(true);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState();
   const [imageUrl, setImageUrl] = useState('');
   const [productName, setProductName] = useState('');
   const [productWeight, setProductWeight] = useState('');
   const [productDesc, setProductDesc] = useState('');
   const [productPrice, setProductPrice] = useState('');
   const [error, setError] = useState('');
+  const chainId = SUPPORTED_CHAIN;
 
-  const { signer, chainId } = useSignerOrProvider();
-  const contract = useContractInstance(signer);
+  const { signer } = useSignerOrProvider();
+  const contract = useContractInstance(true);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
