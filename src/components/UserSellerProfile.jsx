@@ -8,8 +8,8 @@ import emptyCart from "../assets/cart.png";
 
 const UserSellerProfile = () => {
   const allProduct = UseGetAllProduct();
-  const { allSeller, loading, error } = useGetSeller(); 
-  const { address, isConnected } = useAppKitAccount(); 
+  const { allSeller } = useGetSeller();
+  const { address, isConnected } = useAppKitAccount();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,13 +21,7 @@ const UserSellerProfile = () => {
   const userSeller = allSeller.find((data) => data?.address === address);
   const userProducts = allProduct.filter((info) => info?.address === address);
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
 
-  if (error) {
-    return <p>Error fetching sellers: {error}</p>;
-  }
 
   return (
     <div>
@@ -83,7 +77,7 @@ const UserSellerProfile = () => {
                 <p className="flex justify-between my-4 font-bold">
                   Price <span>{formatUnits(info.price)} PTT</span>
                 </p>
-                <button className="my-4 border w-[100%] py-2 px-4 border-[#427142] text-[#427142] rounded-lg">
+                <button className="my-4 border w-[100%] py-2 px-4 border-[#154A80] text-[#154A80] rounded-lg">
                   View details
                 </button>
               </Link>
