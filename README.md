@@ -2,7 +2,7 @@
 
 ## Product Overview:
 
-Usedy is a decentralised marketplace application designed to incentivise and empower individuals, recyclable/reuseable material sellers, recyclable/reuseable centres, companies, and other buyers to participate actively in sustainable waste management and recycling efforts. By leveraging blockchain technology, Usedy connects sellers offering recyclable/reusable materials with buyers in a transparent and rewarding ecosystem. Sellers list their recyclable/reuseable materials/products while the buyers make purchases of these recyclable/reuseable products using blockchain The users (the sellers and buyers) are rewarded with a token in the form of usedy points, which upon accumulation to a certain amount can be exchanged for a valuable token and used to purchase eco-friendly products, services, or carbon offset certificates.
+Usedy is a decentralised marketplace application designed to incentivise and empower individuals, recyclable/reusable material sellers, recyclable/reusable centres, companies, and other buyers to participate actively in sustainable waste management and recycling efforts. By leveraging blockchain technology, Usedy connects sellers offering recyclable/reusable materials with buyers in a transparent and rewarding ecosystem. Sellers list their recyclable/reuseable materials/products while the buyers make purchases of these recyclable/reuseable products using blockchain The users (the sellers and buyers) are rewarded with a token in the form of usedy points, which upon accumulation to a certain amount can be exchanged for a valuable token and used to purchase eco-friendly products, services, or carbon offset certificates.
 
 ## Problem Statement:
 
@@ -83,7 +83,7 @@ Individuals interested in recycling and sustainability.
 
 Recyclable/reusable material sellers, collectors, and businesses.
 
-Buyers seeking recyclable/reuseable materials for recycling.
+Buyers seeking recyclable/reusable materials for recycling.
 
 Revenue
 
@@ -93,9 +93,9 @@ Revenue
 
 Usedy is committed to making recycling more accessible, rewarding, and environmentally impactful. By connecting recyclable/reusable product sellers and buyers through blockchain technology.
 
-With a decentralised marketplace functionality and blockchain technology to incentivise recycling and promote sustainable waste management. usedy empowers individuals, businesses, and organizations to participate actively in the recycling ecosystem; hence it encourages sustainable waste management practices and contributes to a greener, more eco-conscious world.
+With a decentralised marketplace functionality and blockchain technology to incentivise recycling and promote sustainable waste management. Usedy empowers individuals, businesses, and organisations to participate actively in the recycling ecosystem; hence, it encourages sustainable waste management practices and contributes to a greener, more eco-conscious world.
 
 ### Contract Deployed:
 UsedyToken deployed to 0x5FbDB2315678afecb367f032d93F642f64180aa3
 
-UsedDy deployed to 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+UsedDy deployed to 0x951fAa8B5E040DdC3f0489D00CF1E66be2355b25
