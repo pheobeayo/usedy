@@ -61,7 +61,7 @@ const EditProduct = ({ id }) => {
   const handleSubmission = async () => {
     if (!selectedFile) return toast.error("No file selected", { position: "top-center" });
 
-    setImageUrl(`ipfs://fakehash/${selectedFile.name}`); // Simulated IPFS
+    setImageUrl(`ipfs://fakehash/${selectedFile.name}`); 
     setShowForm(true);
   };
 

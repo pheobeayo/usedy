@@ -44,7 +44,7 @@ const MarketplaceDetails = () => {
                 {transaction.name}
               </h3>
               <p className='font-titiliumweb mb-4 font-bold text-[#154A80] lg:text-[24px] md:text-[24px] text-[20px]'>
-                {formatUnits(transaction.price)} AMB (per unit of measure)
+                {formatUnits(transaction.price)} PTT (per unit of measure)
               </p>
               <p className='flex justify-between my-4'>Quantity available: <span>{Number(transaction.weight)}</span></p>
               <p className='flex justify-between my-4'>Seller's location: <span>{transaction.location}</span></p>

@@ -3050,7 +3050,7 @@ use-sync-external-store@1.2.0:
     react-spinners "^0.15.0"
     react-toastify "^11.0.5"
     tailwindcss "^4.0.17"
-    usedy "file:../../../Library/Caches/Yarn/v6/npm-usedy-0.0.0-45b704b3-43fc-4415-a276-71cb6d1aeead-1746356981757/node_modules/usedy"
+    usedy "file:../../../AppData/Local/Yarn/Cache/v6/npm-usedy-0.0.0-07754b2a-c819-4b80-ba31-c317a9bb0255-1746427082044/node_modules/usedy"
 
 util-deprecate@^1.0.1:
   version "1.0.2"

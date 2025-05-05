@@ -30,7 +30,7 @@ const BuyProduct = ({ id, price }) => {
 
   const { address } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
-  const { usedyContract } = useContractInstance(true);
+  const contract = useContractInstance(true);
 
   const handleBuyProduct = async () => {
     if (!address) {
@@ -41,13 +41,13 @@ const BuyProduct = ({ id, price }) => {
       return toast.error(`Wrong network. Please connect to ${SUPPORTED_CHAIN.name}`, { position: "top-center" });
     }
 
-    if (!usedyContract) {
+    if (!contract) {
       return toast.error("Contract is not ready", { position: "top-center" });
     }
 
     try {
       const total = ethers.parseUnits(price.toString(), 18) * BigInt(amount);
-      const tx = await usedyContract.buyProduct(id, amount, { value: total });
+      const tx = await contract.buyProduct(id, amount, { value: total });
       const receipt = await tx.wait();
 
       if (receipt.status) {
