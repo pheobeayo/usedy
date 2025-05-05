@@ -45,11 +45,11 @@ const MarketplaceHomeDetails = () => {
                         </div>
                         <div className='text-[#0F160F] lg:w-[52%] md:w-[52%] w-[100%]'>
                             <h3 className='font-bold mt-4 lg:mt-0 md:mt-0 lg:text-[24px] md:text-[24px] text-[20px]'>{transaction.name}</h3>
-                            <p className='mb-4 font-bold text-[#015C28] lg:text-[24px] md:text-[24px] text-[20px]'>{formatUnits(transaction.price)} PTT </p>
+                            <p className='mb-4 font-bold text-[#154A80] lg:text-[24px] md:text-[24px] text-[20px]'>{formatUnits(transaction.price)} PTT </p>
                             <p className='flex justify-between my-4'>Quantity available: <span>{transaction.weight}</span></p>
                             <p className='flex justify-between my-4'>Seller's location: <span>{transaction.location}</span></p>
                             <p className='flex justify-between my-4'>Seller's wallet address: <span>{truncateAddress(transaction.address)}</span></p>
-                            <button className='bg-[#015C28] w-[100%] py-2 text-white mb-4' onClick={handleShowModal}>Edit information</button>
+                            <button className='bg-[#154A80] w-[100%] py-2 text-white mb-4' onClick={handleShowModal}>Edit information</button>
                             <button className='bg-white w-[100%] py-2 text-[#154A80] border border-[#154A80] mb-4' onClick={handleCloseModal}>Add Comment</button>
                             <p>Kindly drop a comment upon receipt of your products. <a href="#" className='text-[#154A80] font-bold'>Learn More</a></p>
                         </div>

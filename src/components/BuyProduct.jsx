@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { toast } from 'react-toastify';
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
-// import { pharosNetwork } from '../connection';
+import { SUPPORTED_CHAIN, isSupportedChain } from '../connection'; 
 import { ethers } from 'ethers';
 import useContractInstance from '../Hooks/useContractInstance';
 
@@ -37,8 +37,8 @@ const BuyProduct = ({ id, price }) => {
       return toast.error("Please connect your wallet", { position: "top-center" });
     }
 
-    if (Number(chainId) !== Number(pharosNetwork.id)) {
-      return toast.error("Wrong network. Connect to Pharos", { position: "top-center" });
+    if (!isSupportedChain(chainId)) { // 
+      return toast.error(`Wrong network. Please connect to ${SUPPORTED_CHAIN.name}`, { position: "top-center" });
     }
 
     if (!usedyContract) {

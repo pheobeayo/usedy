@@ -42,7 +42,7 @@ const MarketplaceHome = () => {
                                     <h3 className='font-bold mt-4 lg:text-[20px] md:text-[20px] text-[18px] capitalise font-titiliumweb'>{product.name}</h3>
                                     <p className='flex justify-between my-4'>Quantity:<span>{product.weight} </span> </p>
                                     <p className='flex justify-between my-4'>Seller &apos;s location <span> {product.location} </span></p>
-                                    <p className='flex justify-between my-4 font-bold'>Price: <span>{formatUnits(product.price)} </span></p>
+                                    <p className='flex justify-between my-4 font-bold'>Price: <span>{formatUnits(product.price)} PTT</span></p>
                                     <button className='my-4 border w-[100%] py-2 px-4 border-[#154A80] bg-white text-[#154A80] rounded-lg'>View details</button>
                                 </Link>
                             </div>

@@ -8,7 +8,7 @@ import useContractInstance from "./useContractInstance";
 
 const useCreateProfile = () => {
   const [isCreating, setIsCreating] = useState(false);
-  const contract = useContractInstance(true); // Assume this returns usedyContract
+  const contract = useContractInstance(true); 
   const { address } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
   const errorDecoder = ErrorDecoder.create([abi]);
