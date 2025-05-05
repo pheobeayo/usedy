@@ -14,6 +14,7 @@ const MarketplaceDetails = () => {
   const [transaction, setTransaction] = useState(null);
   const { address } = useAppKitProvider("eip155");
 
+  
   useEffect(() => {
     if (allProduct.length > 0) {
       const foundTransaction = allProduct.find(data => String(data?.id) === id);
@@ -21,11 +22,12 @@ const MarketplaceDetails = () => {
     }
   }, [allProduct, id]);
 
-  const truncateAddress = (addr) => {
-    if (!addr) return '';
-    const start = addr.slice(0, 20);
+  const truncateAddress = (address) => {
+    if (!address) return '';
+    const start = address.slice(0, 20);
     return `${start}...`;
   };
+
 
   return (
     <main>
@@ -41,7 +43,7 @@ const MarketplaceDetails = () => {
               <h3 className='font-bold mt-4 lg:mt-0 md:mt-0 lg:text-[24px] md:text-[24px] text-[20px] capitalise font-titiliumweb'>
                 {transaction.name}
               </h3>
-              <p className='font-titiliumweb mb-4 font-bold text-[#427142] lg:text-[24px] md:text-[24px] text-[20px]'>
+              <p className='font-titiliumweb mb-4 font-bold text-[#154A80] lg:text-[24px] md:text-[24px] text-[20px]'>
                 {formatUnits(transaction.price)} AMB (per unit of measure)
               </p>
               <p className='flex justify-between my-4'>Quantity available: <span>{Number(transaction.weight)}</span></p>

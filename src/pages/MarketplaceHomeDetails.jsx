@@ -10,7 +10,7 @@ const MarketplaceHomeDetails = () => {
     const allProduct = UseGetAllProduct()
     const [transaction, setTransaction] = useState(null);
     const [showModal, setShowModal] = useState(false)
-
+    
     useEffect(() => {
         if (allProduct.length > 0) {
             const foundTransaction = allProduct.find(data => String(data?.id) === id);
@@ -20,18 +20,18 @@ const MarketplaceHomeDetails = () => {
     }, [allProduct, id]);
 
     const truncateAddress = (address) => {
-        if (!address) return '';
-        const start = address.slice(0, 20);
-        return `${start}...`;
+    if (!address) return '';
+    const start = address.slice(0, 20);
+    return `${start}...`;
     };
 
     const handleShowModal = () => {
         setShowModal(true);
-    };
+     };
 
-    const handleCloseModal = () => {
+     const handleCloseModal = () => {
         setShowModal(false);
-    };
+     };
 
 
     return (
