@@ -27,6 +27,7 @@ const MarketplaceDetails = () => {
     const start = address.slice(0, 20);
     return `${start}...`;
   };
+  
 
 
   return (

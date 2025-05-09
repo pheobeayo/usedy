@@ -3,7 +3,8 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { toast } from 'react-toastify';
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
-import { pharosNetwork } from  '../connection';
+import { SUPPORTED_CHAIN } from '../connection';
+import { isSupportedChain } from '../connection';
 import { TiWarning } from 'react-icons/ti';
 import useContractInstance from '../Hooks/useContractInstance';
 
@@ -28,23 +29,23 @@ const ApprovePayment = ({ id }) => {
 
   const { address } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
-  const { usedyContract } = useContractInstance(true);
+  const contract = useContractInstance(true);
 
   const handleApproval = async () => {
     if (!address) {
       return toast.error("Please connect your wallet", { position: "top-center" });
     }
 
-    if (Number(chainId) !== Number(pharosNetwork.id)) {
-      return toast.error("Wrong network. Connect to Pharos", { position: "top-center" });
+    if (!isSupportedChain(chainId)) { // 
+      return toast.error(`Wrong network. Please connect to ${SUPPORTED_CHAIN.name}`, { position: "top-center" });
     }
 
-    if (!usedyContract) {
+    if (!contract) {
       return toast.error("Contract not available", { position: "top-center" });
     }
 
     try {
-      const tx = await usedyContract.approvePayment(id);
+      const tx = await contract.approvePayment(id);
       const receipt = await tx.wait();
 
       if (receipt.status) {
@@ -63,7 +64,7 @@ const ApprovePayment = ({ id }) => {
   return (
     <div>
       <button
-        className="bg-white text-[#427142] border border-[#427142] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-2 hover:bg-bg-ash hover:text-darkGrey hover:font-bold"
+        className="bg-white text-[#154A80] border border-[#154A80] py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-2 hover:bg-bg-ash hover:text-darkGrey hover:font-bold"
         onClick={handleOpen}
       >
         Approve Payment
@@ -87,7 +88,7 @@ const ApprovePayment = ({ id }) => {
           </div>
 
           <button
-            className="bg-[#427142] text-white py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-4"
+            className="bg-[#154A80] text-white py-2 px-4 rounded-lg lg:text-[20px] md:text-[20px] font-bold text-[16px] w-[100%] my-4"
             onClick={handleApproval}
           >
             Approve &rarr;
