@@ -6,6 +6,7 @@ import { formatUnits } from 'ethers';
 const ProductCard = () => {
   const allProduct = UseGetAllProduct()
   console.log(allProduct)
+  
 
 
 
