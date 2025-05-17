@@ -29,10 +29,10 @@ const EditProfile = () => {
   const handleClose = () => setOpen(false);
 
   const { walletProvider } = useAppKitProvider("eip155");
-  const { usedyContract } = useContractInstance(true);
+  const contract  = useContractInstance(true);
 
   const handleEditProfile = async () => {
-    if (!walletProvider || !usedyContract) {
+    if (!walletProvider || !contract) {
       toast.error("Wallet provider or contract not available", {
         position: "top-center",
       });
@@ -40,7 +40,7 @@ const EditProfile = () => {
     }
 
     try {
-      const tx = await usedyContract.updateProfile(location, mail);
+      const tx = await contract.updateProfile(location, mail);
       const receipt = await tx.wait();
 
       if (receipt.status) {

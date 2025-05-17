@@ -17,22 +17,22 @@ const useCreateProfile = () => {
     async (sellerName, location, mail) => {
       if (!sellerName || !location || !mail) {
         toast.error("All fields are required", { position: "top-center" });
-        return false;
+        return;
       }
 
       if (!address) {
         toast.error("Please connect your wallet", { position: "top-center" });
-        return false;
+        return;
       }
 
       if (!isSupportedChain(chainId)) {
         toast.error("Wrong network. Connect to a supported network", { position: "top-center" });
-        return false;
+        return;
       }
 
       if (!contract) {
         toast.error("Contract not ready", { position: "top-center" });
-        return false;
+        return;
       }
 
       setIsCreating(true);
